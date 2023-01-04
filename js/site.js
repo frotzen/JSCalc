@@ -19,14 +19,20 @@ operandBtns.forEach((btn) => {
     removeActive();
     if (output.value == "0") {
       output.value = e.target.value;
-    } else if (output.value.includes(".")) {
+    } else if (output.value.includes(".") && !isOperator) {
       output.value = output.value + "" + e.target.value.replace(".", "");
+      console.log(output.value);
+    } else if (output.value.includes(".") && isOperator) {
+      isOperator = false;
+      output.value = e.target.value;
     } else if (isOperator) {
+      console.log("HIT isOperator");
       isOperator = false;
       output.value = e.target.value;
     } else {
       output.value = output.value + "" + e.target.value;
     }
+    console.log(isOperator, btn);
   });
 });
 
