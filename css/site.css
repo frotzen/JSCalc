@@ -94,7 +94,7 @@ input[type="text"] {
   width: 100%;
   color: #d2d2d2;
   border: 0px;
-  font-size: 3rem;
+  font-size: 2rem;
 }
 
 #main {
@@ -107,7 +107,9 @@ input[type="text"] {
 }
 
 .calcHeader {
+  background-color: rgba(8, 30, 34, 0.5);
   padding: 10px;
+  margin-bottom: 10px;
 }
 
 .calcFooter > * + * {
@@ -143,7 +145,7 @@ input[type="text"] {
 
 .cbtn.active {
   background-color: #ffffff;
-  color: #f69906;
+  color: #7c2100;
 }
 
 .cbtn-gray {
