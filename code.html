@@ -94,21 +94,155 @@
         <div class="col-12 col-lg-8">
           <pre class="line-numbers">
                 <code class="language-js">
-                    function displayMessage() {
-
-                        let myMessage = document.getElementById("message").value;
-                        alert(myMessage);
-
-                      }                      
+                  // Setup DOM objects
+                  const form = document.getElementById("calcForm");
+                  const output = document.getElementById("output");
+                  const operandBtns = document.querySelectorAll("button[data-type=operand]");
+                  const operatorBtns = document.querySelectorAll("button[data-type=operator]");
+                  let isOperator = false;
+                  let equation = [];
+                  
+                  // Disable default submit action
+                  form.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                  });
+                  
+                  // Clear active button state
+                  const removeActive = () => {
+                    operatorBtns.forEach((btn) => {
+                      btn.classList.remove("active");
+                    });
+                  };                    
                 </code>
             </pre>
         </div>
         <!-- Code Docs -->
         <div class="col-12 col-lg-4">
-          <p>The code is structured in one function</p>
-          <h5>displayMessage</h5>
-          <p>Prints out the message</p>
+          <p>
+            There are three main sections of code in JS Calc. The first section
+            defines the objects required for JS Calc to function:
+            <ul>
+              <li>form - the HTML form containing the calculator</li>
+              <li>output - the object containing display digits</li>
+              <li>operandBtns - an array of all the operand buttons</li>
+              <li>operatorBtns - an array of all the operator buttons</li>
+              <li>isOperator - a flag for when an operator button is pressed</li>
+              <li>equation - an array that stores the current math operations</li>
+            </ul>
+          </p>
+          <h5>form.addEventListener()</h5>
+          <p>used to disable the default submit action for the form</p>
+          <h5>removeActive()</h5>
+          <p>clears "active" status for all operator buttons</p>
         </div>
+        <p></p>
+        <p></p>
+        <hr>
+        <!-- Code Editor -->
+        <div class="col-12 col-lg-8">
+          <pre class="line-numbers">
+                <code class="language-js">
+                  // Setup EventListener to catch "clicks" and process operands
+                  operandBtns.forEach((btn) => {
+                    btn.addEventListener("click", (e) => {
+                      removeActive();
+                      if (output.value == "0") {
+                        output.value = e.target.value;
+                      } else if (output.value.includes(".") && !isOperator) {
+                        output.value = output.value + "" + e.target.value.replace(".", "");
+                      } else if (output.value.includes(".") && isOperator) {
+                        isOperator = false;
+                        output.value = e.target.value;
+                      } else if (isOperator) {
+                        isOperator = false;
+                        output.value = e.target.value;
+                      } else {
+                        output.value = output.value + "" + e.target.value;
+                      }
+                    });
+                  });         
+                </code>
+            </pre>
+        </div>
+        <!-- Code Docs -->
+        <div class="col-12 col-lg-4">
+          <p>
+            The second section creates an EventListener for each operand button
+            and processes each event according to which operand was pressed.
+            <ul>
+              <li>0 - initial state, assigns value of btn (e)</li>
+              <li>"." - the first check for "." if no operator is pressed (only one "." is allowed)</li>
+              <li>"." - the second case after an operator is pressed</li>
+              <li>isOperator - clear display and show next series of operands</li>
+              <li>default - add the next operand in series</li>
+            </ul>
+          </p>
+        </div>
+        <p></p>
+        <p></p>
+        <hr>
+        <!-- Code Editor -->
+        <div class="col-12 col-lg-8">
+          <pre class="line-numbers">
+                <code class="language-js">
+                  // Setup EventListener for operators
+                  operatorBtns.forEach((btn) => {
+                    btn.addEventListener("click", (e) => {
+                      removeActive();
+                      e.currentTarget.classList.add("active");
+                      switch (e.target.value) {
+                        // Special cases that only require immediate processing
+                        case "%":
+                          output.value = parseFloat(output.value) / 100;
+                          break;
+                        case "negate":
+                          output.value = parseFloat(output.value) * -1;
+                          break;
+                        case "invert":
+                          output.value = 1 / parseFloat(output.value);
+                          break;
+                        case "=":
+                          equation.push(output.value);
+                          output.value = eval(equation.join(""));
+                          equation = [];
+                          break;
+                        // Normal case for processing equation accumulator
+                        default:
+                          let lastItem = equation[equation.length - 1];
+                          if (["/", "*", "+", "-"].includes(lastItem) && isOperator) {
+                            equation.pop();
+                            equation.push(e.target.value);
+                          } else {
+                            equation.push(output.value);
+                            equation.push(e.target.value);
+                          }
+                          isOperator = true;
+                          break;
+                      }
+                    });
+                  });                   
+                </code>
+            </pre>
+        </div>
+        <!-- Code Docs -->
+        <div class="col-12 col-lg-4">
+          <p>
+            The third and final section handles operators.  Like the operandBtns
+            object, operatorBtns creates an EventListener for each operator keypress.
+          </p>
+          <p>Special case operators that require only updating output.value are
+            handled first.  These are "%", "+/-", "1/x", and "=".
+          </p>
+          <p>The last operators are standard math functions "/", "*", "+", and "-".
+            These require updating the equation[] object which acts as an accumulator.
+            After one of these is processed, the isOperator flag is set so the
+            output.value object can be cleared and a new series of operands can be
+            displayed.
+          </p>
+        </div>
+        <p></p>
+        <p></p>
+        <hr>
       </div>
     </main>
 

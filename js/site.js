@@ -6,14 +6,22 @@ const form = document.getElementById("calcForm");
 const output = document.getElementById("output");
 const operandBtns = document.querySelectorAll("button[data-type=operand]");
 const operatorBtns = document.querySelectorAll("button[data-type=operator]");
+let isOperator = false;
+let equation = [];
 
 // Disable default submit action
 form.addEventListener("submit", (e) => {
   e.preventDefault();
 });
 
-// Take input and display it
-let isOperator = false;
+// Clear active button state
+const removeActive = () => {
+  operatorBtns.forEach((btn) => {
+    btn.classList.remove("active");
+  });
+};
+
+// Setup EventListener to catch "clicks" and process operands
 operandBtns.forEach((btn) => {
   btn.addEventListener("click", (e) => {
     removeActive();
@@ -36,14 +44,13 @@ operandBtns.forEach((btn) => {
   });
 });
 
-// Check operator buttons
-let equation = [];
+// Setup EventListener for operators
 operatorBtns.forEach((btn) => {
   btn.addEventListener("click", (e) => {
     removeActive();
     e.currentTarget.classList.add("active");
-
     switch (e.target.value) {
+      // Special cases that only require immediate processing
       case "%":
         output.value = parseFloat(output.value) / 100;
         break;
@@ -58,6 +65,7 @@ operatorBtns.forEach((btn) => {
         output.value = eval(equation.join(""));
         equation = [];
         break;
+      // Normal case for processing equation accumulator
       default:
         let lastItem = equation[equation.length - 1];
         if (["/", "*", "+", "-"].includes(lastItem) && isOperator) {
@@ -72,12 +80,6 @@ operatorBtns.forEach((btn) => {
     }
   });
 });
-
-const removeActive = () => {
-  operatorBtns.forEach((btn) => {
-    btn.classList.remove("active");
-  });
-};
 
 /*  REMOVED SweetAlerts
   function displayMessage() {
